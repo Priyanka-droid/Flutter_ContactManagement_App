@@ -1,42 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contact/models/custom_model.dart';
+import 'package:flutter_contact/models/item_model.dart' as model;
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ContactListProvider extends ChangeNotifier {
-  List<Contact> contactList = [];
   ContactListProvider() {
     loadContacts();
   }
   void loadContacts() async {
     bool permissionGranted = await Permission.contacts.request().isGranted;
+
     if (permissionGranted) {
-      List<Contact> contacts = await ContactsService.getContacts();
-      contactList = contacts;
-      print(contacts.length);
+      if (Hive.box('contactBox').keys.isEmpty) {
+        List<Contact> contacts = await ContactsService.getContacts();
+        contacts.forEach((contact) {
+          String _givenName =
+              contact.givenName == null ? "None" : contact.givenName!;
+          model.ItemModel _phone = contact.phones == null
+              ? model.ItemModel(label: "work", value: "none")
+              : (contact.phones!.isEmpty
+                  ? model.ItemModel(label: "work", value: "none")
+                  : model.ItemModel(
+                      label: ((contact.phones)!)[0].label,
+                      value: ((contact.phones)!)[0].value));
+          CustomContactModel contactVal =
+              CustomContactModel(givenName: _givenName, phone: _phone);
+          Hive.box('contactBox').add(contactVal);
+        });
+      }
+
+      // print(contacts.length);
     } else {
-      contactList = [];
+      Hive.box('contactBox').add("");
     }
     notifyListeners();
   }
 
-  void deleteContact(int index) async {
+  void deleteContact(int index) {
     // await ContactsService.deleteContact(contact);
-    contactList.removeAt(index);
+    Hive.box('contactBox').deleteAt(index);
     notifyListeners();
   }
 
-  void addContact(Contact contact) async {
+  void addContact(CustomContactModel contact) {
     // await ContactsService.addContact(contact);
-    contactList.add(contact);
+    Hive.box('contactBox').add(contact);
     notifyListeners();
   }
 
-  void updateContact(int index, Contact contact) async {
-    // await ContactsService.updateContact(contact);
-    contactList[index] = contact;
+  void updateContact(int index, CustomContactModel contact) async {
+    Hive.box('contactBox').putAt(index, contact);
     notifyListeners();
   }
 
-  List<Contact> get getContactList => contactList;
+  get getContactList => Hive.box('contactBox');
 }

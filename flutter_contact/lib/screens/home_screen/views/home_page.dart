@@ -24,17 +24,20 @@ class ContactManagement extends StatelessWidget {
           )
         ],
       ),
+      // body: Text('demo'),
       body: displayContactList(),
     );
   }
 
   Widget displayContactList() {
     return Consumer<ContactListProvider>(
-        builder: (context, contactList, child) {
+        builder: (context, contactListProvider, child) {
+      final contactList = contactListProvider.getContactList;
+      print(contactList.length);
       return ListView.builder(
-          key: UniqueKey(),
-          itemCount: contactList.getContactList.length,
+          itemCount: contactList.length,
           itemBuilder: (context, index) {
+            final contact = contactList.getAt(index);
             return ListTile(
               onTap: () {
                 Navigator.push(
@@ -42,11 +45,14 @@ class ContactManagement extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => UpdateContact(index)),
                 );
               },
+              leading: CircleAvatar(
+                  child: Text(
+                      "${(contact.givenName.split(" "))[0][0]}" + "${('')}")),
               title: Text(
-                contactList.getContactList[index].givenName!,
+                contact.givenName,
                 style: TextStyle(color: Colors.black),
               ),
-              subtitle: Text('subtitle'),
+              subtitle: Text(contact.phone.value),
               trailing: IconButton(
                   onPressed: () {
                     showDialog(
@@ -57,7 +63,7 @@ class ContactManagement extends StatelessWidget {
                         actions: <Widget>[
                           FloatingActionButton(
                             onPressed: () {
-                              contactList.deleteContact(index);
+                              contactListProvider.deleteContact(index);
                               Navigator.of(ctx).pop();
                             },
                             child: Text("Yes"),

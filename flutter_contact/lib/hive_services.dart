@@ -6,12 +6,6 @@ import 'package:flutter_contact/models/item_model.dart';
 import 'package:hive_flutter/adapters.dart';
 
 class HiveServices {
-  // static HiveServices? _instance;
-
-  // static HiveServices get instance => _instance ??= HiveServices._();
-
-  // HiveServices._();
-
   hiveService() async {
     await Hive.initFlutter();
     WidgetsFlutterBinding.ensureInitialized();

@@ -54,15 +54,11 @@ class ContactManagement extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => UpdateContact(index)),
                 );
               },
-              leading: CircleAvatar(
-                  child: isAvatar
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Image.memory(
-                            contact.avatar,
-                          ),
-                        )
-                      : Text(contact.givenName[0][0])),
+              leading: isAvatar
+                  ? CircleAvatar(
+                      backgroundImage: MemoryImage(contact.avatar),
+                    )
+                  : CircleAvatar(child: Text(contact.givenName[0][0])),
               title: Text(
                 contact.givenName,
                 style: TextStyle(color: Colors.black),

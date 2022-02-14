@@ -34,6 +34,7 @@ class CustomFormState extends State<CustomForm> {
   final myController1 = TextEditingController();
   final myController2 = TextEditingController();
   final myController3 = TextEditingController();
+  final myController4 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class CustomFormState extends State<CustomForm> {
                 TextFormField(
                   controller: myController1,
                   decoration: InputDecoration(
-                    label: Text("Enter Display Name"),
+                    label: Text("Enter First Name"),
                   ),
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -66,6 +67,19 @@ class CustomFormState extends State<CustomForm> {
                 ),
                 TextFormField(
                   controller: myController2,
+                  decoration: InputDecoration(
+                    label: Text("Enter Last Name"),
+                  ),
+                  // The validator receives the text that the user has entered.
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: myController3,
                   decoration: InputDecoration(
                     label: Text("Enter Contact Number"),
                   ),
@@ -89,17 +103,21 @@ class CustomFormState extends State<CustomForm> {
 
                       if (index == -1) {
                         contactListProvider.addContact(CustomContactModel(
-                            givenName: myController1.text,
+                            givenName: myController1.text.trim() +
+                                " " +
+                                myController2.text.trim(),
                             phone: model.ItemModel(
-                                label: "work", value: myController2.text),
+                                label: "work", value: myController3.text),
                             avatar: avatarLink == null ? null : avatarLink));
                       } else {
                         contactListProvider.updateContact(
                             index,
                             CustomContactModel(
-                                givenName: myController1.text,
+                                givenName: myController1.text.trim() +
+                                    " " +
+                                    myController2.text.trim(),
                                 phone: model.ItemModel(
-                                    label: "work", value: myController2.text),
+                                    label: "work", value: myController3.text),
                                 avatar:
                                     avatarLink == null ? null : avatarLink));
                       }

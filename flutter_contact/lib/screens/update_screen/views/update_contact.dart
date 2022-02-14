@@ -1,9 +1,9 @@
-import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contact/contact_management_provider.dart';
-import 'package:flutter_contact/models/custom_model.dart';
 import 'package:flutter_contact/screens/form.dart';
 import 'package:provider/provider.dart';
+
+// Update screen which displays update form on giving index as 1
 
 class UpdateContact extends StatelessWidget {
   final int index;

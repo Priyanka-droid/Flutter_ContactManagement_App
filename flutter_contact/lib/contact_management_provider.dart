@@ -1,10 +1,12 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_contact/models/custom_model.dart';
 import 'package:flutter_contact/models/item_model.dart' as model;
 import 'package:hive_flutter/adapters.dart';
-import 'package:provider/provider.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+// Provider class containing methods which invoke notifyListeners on call
 
 class ContactListProvider extends ChangeNotifier {
   ContactListProvider() {
@@ -26,8 +28,9 @@ class ContactListProvider extends ChangeNotifier {
                   : model.ItemModel(
                       label: ((contact.phones)!)[0].label,
                       value: ((contact.phones)!)[0].value));
-          CustomContactModel contactVal =
-              CustomContactModel(givenName: _givenName, phone: _phone);
+          Uint8List? _avatar = contact.avatar;
+          CustomContactModel contactVal = CustomContactModel(
+              givenName: _givenName, phone: _phone, avatar: _avatar);
           Hive.box('contactBox').add(contactVal);
         });
       }

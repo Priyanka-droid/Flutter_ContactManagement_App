@@ -2,6 +2,8 @@ import 'package:hive/hive.dart';
 
 part 'item_model.g.dart';
 
+// custom model for phone
+
 @HiveType(typeId: 2)
 class ItemModel {
   @HiveField(0)

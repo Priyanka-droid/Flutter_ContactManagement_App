@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_contact/screens/add_screen/views/add_contact.dart';
 import 'package:flutter_contact/screens/update_screen/views/update_contact.dart';
@@ -33,8 +35,6 @@ class ContactManagement extends StatelessWidget {
     return Consumer<ContactListProvider>(
         builder: (context, contactListProvider, child) {
       final contactList = contactListProvider.getContactList;
-
-      print(contactList.length);
       return ListView.builder(
           itemCount: contactList.length,
           itemBuilder: (context, index) {
@@ -69,7 +69,7 @@ class ContactManagement extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        title: Text("Delete contact confirmation"),
+                        title: const Text("Delete contact confirmation"),
                         content: Text("Do you want to delete this contact"),
                         actions: <Widget>[
                           FloatingActionButton(

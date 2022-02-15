@@ -17,21 +17,24 @@ class CustomContactModelAdapter extends TypeAdapter<CustomContactModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CustomContactModel(
-      givenName: fields[0] as String,
-      phone: fields[1] as ItemModel,
-      avatar: fields[2] as Uint8List?,
+      firstName: fields[0] as String,
+      lastName: fields[1] as String,
+      phone: fields[2] as ItemModel,
+      avatar: fields[3] as Uint8List?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CustomContactModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.givenName)
+      ..write(obj.firstName)
       ..writeByte(1)
-      ..write(obj.phone)
+      ..write(obj.lastName)
       ..writeByte(2)
+      ..write(obj.phone)
+      ..writeByte(3)
       ..write(obj.avatar);
   }
 

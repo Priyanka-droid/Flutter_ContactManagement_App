@@ -9,11 +9,17 @@ part 'custom_model.g.dart';
 @HiveType(typeId: 1)
 class CustomContactModel {
   @HiveField(0)
-  String givenName;
+  String firstName;
   @HiveField(1)
-  item.ItemModel phone;
+  String lastName;
   @HiveField(2)
+  item.ItemModel phone;
+  @HiveField(3)
   Uint8List? avatar;
+
   CustomContactModel(
-      {required this.givenName, required this.phone, this.avatar});
+      {required this.firstName,
+      required this.lastName,
+      required this.phone,
+      this.avatar});
 }

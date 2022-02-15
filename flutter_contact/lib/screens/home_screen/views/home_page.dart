@@ -40,13 +40,6 @@ class ContactManagement extends StatelessWidget {
           itemBuilder: (context, index) {
             final contact = contactList.getAt(index);
             bool isAvatar = contact.avatar == null ? false : true;
-            // List<String> nameIconList =
-            //     contact.givenName.split(new RegExp("\\s+"));
-            // print(nameIconList);
-            // print(nameIconList.length);
-            // String nameIcon = nameIconList.length == 1
-            //     ? nameIconList[0][0]
-            //     : "${nameIconList[0][0]}${nameIconList[1][0]}";
             return ListTile(
               onTap: () {
                 Navigator.push(
@@ -58,9 +51,10 @@ class ContactManagement extends StatelessWidget {
                   ? CircleAvatar(
                       backgroundImage: MemoryImage(contact.avatar),
                     )
-                  : CircleAvatar(child: Text(contact.givenName[0][0])),
+                  : CircleAvatar(
+                      child: Text(contact.firstName[0] + contact.lastName[0])),
               title: Text(
-                contact.givenName,
+                contact.firstName + " " + contact.lastName,
                 style: TextStyle(color: Colors.black),
               ),
               subtitle: Text(contact.phone.value),

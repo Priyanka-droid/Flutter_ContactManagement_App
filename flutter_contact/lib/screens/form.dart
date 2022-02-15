@@ -34,7 +34,6 @@ class CustomFormState extends State<CustomForm> {
   final myController1 = TextEditingController();
   final myController2 = TextEditingController();
   final myController3 = TextEditingController();
-  final myController4 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +42,9 @@ class CustomFormState extends State<CustomForm> {
     return Consumer<ContactListProvider>(
         builder: (context, contactListProvider, child) {
       final ImagePicker _picker = ImagePicker();
-
+      CustomContactModel? contact;
+      if (index != -1)
+        contact = (contactListProvider.getContactList).getAt(index);
       return ListView(
         children: [
           Container(
@@ -53,33 +54,33 @@ class CustomFormState extends State<CustomForm> {
               children: <Widget>[
                 // Add TextFormFields and ElevatedButton here.
                 TextFormField(
-                  controller: myController1,
+                  controller: index == -1
+                      ? myController1
+                      : (myController1..text = contact!.firstName),
                   decoration: InputDecoration(
                     label: Text("Enter First Name"),
                   ),
                   // The validator receives the text that the user has entered.
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
+                    return nameValidator(value);
                   },
                 ),
                 TextFormField(
-                  controller: myController2,
+                  controller: index == -1
+                      ? myController2
+                      : (myController2..text = contact!.lastName),
                   decoration: InputDecoration(
                     label: Text("Enter Last Name"),
                   ),
                   // The validator receives the text that the user has entered.
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
+                    return nameValidator(value);
                   },
                 ),
                 TextFormField(
-                  controller: myController3,
+                  controller: index == -1
+                      ? myController3
+                      : (myController3..text = contact!.phone.value.toString()),
                   decoration: InputDecoration(
                     label: Text("Enter Contact Number"),
                   ),
@@ -103,9 +104,8 @@ class CustomFormState extends State<CustomForm> {
 
                       if (index == -1) {
                         contactListProvider.addContact(CustomContactModel(
-                            givenName: myController1.text.trim() +
-                                " " +
-                                myController2.text.trim(),
+                            firstName: myController1.text.trim(),
+                            lastName: myController2.text.trim(),
                             phone: model.ItemModel(
                                 label: "work", value: myController3.text),
                             avatar: avatarLink == null ? null : avatarLink));
@@ -113,9 +113,8 @@ class CustomFormState extends State<CustomForm> {
                         contactListProvider.updateContact(
                             index,
                             CustomContactModel(
-                                givenName: myController1.text.trim() +
-                                    " " +
-                                    myController2.text.trim(),
+                                firstName: myController1.text.trim(),
+                                lastName: myController2.text.trim(),
                                 phone: model.ItemModel(
                                     label: "work", value: myController3.text),
                                 avatar:
@@ -145,5 +144,12 @@ class CustomFormState extends State<CustomForm> {
       Uint8List imageRaw = await imageFile!.readAsBytes();
       avatarLink = imageRaw;
     }
+  }
+
+  String? nameValidator(String? value) {
+    if (value == null || value.isEmpty || value.trim().isEmpty)
+      return "Invalid name";
+    if (value.trim().split(" ").length > 1) return "Name should be single word";
+    return null;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contact/constants.dart';
 import 'package:provider/provider.dart';
 
 import '../../../contact_management_provider.dart';
@@ -15,7 +16,7 @@ class AddContact extends StatelessWidget {
         appBar: AppBar(
           title: Text('Add Contact'),
         ),
-        body: CustomForm(index: -1),
+        body: CustomForm(index: Constants.ADD_INDEX),
       );
     });
   }

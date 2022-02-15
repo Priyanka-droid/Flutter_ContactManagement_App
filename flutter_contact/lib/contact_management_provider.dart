@@ -19,8 +19,10 @@ class ContactListProvider extends ChangeNotifier {
       if (Hive.box('contactBox').keys.isEmpty) {
         List<Contact> contacts = await ContactsService.getContacts();
         contacts.forEach((contact) {
-          String _givenName =
-              contact.givenName == null ? "None" : contact.givenName!;
+          String _firstName =
+              contact.givenName == null ? "none" : contact.givenName!;
+          String _lastName =
+              contact.familyName == null ? "none" : contact.familyName!;
           model.ItemModel _phone = contact.phones == null
               ? model.ItemModel(label: "work", value: "none")
               : (contact.phones!.isEmpty
@@ -30,7 +32,10 @@ class ContactListProvider extends ChangeNotifier {
                       value: ((contact.phones)!)[0].value));
           Uint8List? _avatar = contact.avatar;
           CustomContactModel contactVal = CustomContactModel(
-              givenName: _givenName, phone: _phone, avatar: _avatar);
+              firstName: _firstName,
+              lastName: _lastName,
+              phone: _phone,
+              avatar: _avatar);
           Hive.box('contactBox').add(contactVal);
         });
       }

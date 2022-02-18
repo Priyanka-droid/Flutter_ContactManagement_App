@@ -40,6 +40,23 @@ class CustomForm extends StatelessWidget {
           child: Column(
             children: <Widget>[
               // Add TextFormFields and ElevatedButton here.
+              GestureDetector(
+                onTap: () {
+                  _getFromGallery();
+                },
+                child: Container(
+                    child: Column(
+                  children: [
+                    Image.network(
+                      'https://www.bastiaanmulder.nl/wp-content/uploads/2013/11/dummy-image-square.jpg',
+                      width: 50,
+                      height: 50,
+                    ),
+                    Text(messages.pickImage)
+                  ],
+                )),
+              ),
+
               TextFormField(
                 controller: flow == FormFlow.ADD
                     ? _firstNameController
@@ -75,11 +92,6 @@ class CustomForm extends StatelessWidget {
                 // The validator receives the text that the user has entered.
                 validator: ValidationBuilder().phone().minLength(10).build(),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    _getFromGallery();
-                  },
-                  child: Text(messages.pickImage)),
 
               ElevatedButton(
                 onPressed: () {
@@ -122,7 +134,8 @@ class CustomForm extends StatelessWidget {
       imageFile = File(pickedFile.path);
       Uint8List imageRaw = await imageFile!.readAsBytes();
       avatarLink = imageRaw;
-    }
+    } else
+      avatarLink = null;
   }
 
   String? nameValidator(String? value) {

@@ -48,7 +48,7 @@ class CustomForm extends StatelessWidget {
                     child: Column(
                   children: [
                     Image.network(
-                      'https://www.bastiaanmulder.nl/wp-content/uploads/2013/11/dummy-image-square.jpg',
+                      Constants.IMAGE_URL,
                       width: 50,
                       height: 50,
                     ),

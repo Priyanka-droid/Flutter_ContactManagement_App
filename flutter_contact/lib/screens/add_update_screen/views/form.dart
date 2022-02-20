@@ -1,13 +1,16 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, must_be_immutable
+
 import 'dart:io';
 import 'package:flutter_contact/constants.dart';
 import 'package:flutter_contact/contact_app_strings.dart';
+import 'package:flutter_contact/screens/add_update_screen/views/add_update_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_contact/models/custom_model.dart';
 import 'package:flutter_contact/models/item_model.dart' as model;
 import 'package:form_validator/form_validator.dart';
+import 'package:provider/provider.dart';
 
 class CustomForm extends StatelessWidget {
   CustomForm({Key? key, required this.flow, this.contact}) : super(key: key);
@@ -24,103 +27,69 @@ class CustomForm extends StatelessWidget {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<CustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _phoneController = TextEditingController();
+
+  List<TextEditingController> controllerList = [
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController()
+  ];
 
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
 
-    return ListView(
-      children: [
-        Container(
-            child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              // Add TextFormFields and ElevatedButton here.
-              GestureDetector(
-                onTap: () {
-                  _getFromGallery();
-                },
-                child: Container(
-                    child: Column(
-                  children: [
-                    Image.network(
-                      Constants.IMAGE_URL,
-                      width: 50,
-                      height: 50,
-                    ),
-                    Text(messages.pickImage)
-                  ],
-                )),
-              ),
-
-              TextFormField(
-                controller: flow == FormFlow.ADD
-                    ? _firstNameController
-                    : (_firstNameController..text = contact!.firstName),
-                decoration: InputDecoration(
-                  label: Text(messages.firstNameLabel),
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          // Add TextFormFields and ElevatedButton here.
+          GestureDetector(
+            onTap: () {
+              _getFromGallery();
+            },
+            child: Container(
+                child: Column(
+              children: [
+                Image.network(
+                  Constants.IMAGE_URL,
+                  width: 50,
+                  height: 50,
                 ),
-                // The validator receives the text that the user has entered.
-                validator: (value) {
-                  return nameValidator(value);
-                },
-              ),
-              TextFormField(
-                controller: flow == FormFlow.ADD
-                    ? _lastNameController
-                    : (_lastNameController..text = contact!.lastName),
-                decoration: InputDecoration(
-                  label: Text(messages.lastNameLabel),
-                ),
-                // The validator receives the text that the user has entered.
-                validator: (value) {
-                  return nameValidator(value);
-                },
-              ),
-              TextFormField(
-                controller: flow == FormFlow.ADD
-                    ? _phoneController
-                    : (_phoneController
-                      ..text = contact!.phone.value.toString()),
-                decoration: InputDecoration(
-                  label: Text(messages.contactLabel),
-                ),
-                // The validator receives the text that the user has entered.
-                validator: ValidationBuilder().phone().minLength(10).build(),
-              ),
-
-              ElevatedButton(
-                onPressed: () {
-                  // Validate returns true if the form is valid, or false otherwise.
-                  if (_formKey.currentState!.validate()) {
-                    if (flow == FormFlow.ADD) {
-                      newContact = (CustomContactModel(
-                          firstName: _firstNameController.text.trim(),
-                          lastName: _lastNameController.text.trim(),
-                          phone: model.ItemModel(
-                              label: "work", value: _phoneController.text),
-                          avatar: avatarLink));
-                    } else {
-                      newContact = (CustomContactModel(
-                          firstName: _firstNameController.text.trim(),
-                          lastName: _lastNameController.text.trim(),
-                          phone: model.ItemModel(
-                              label: "work", value: _phoneController.text),
-                          avatar: avatarLink));
-                    }
-                    Navigator.pop(context, newContact);
-                  }
-                },
-                child: const Text('Submit'),
-              ),
-            ],
+                Text(messages.pickImage)
+              ],
+            )),
           ),
-        ))
-      ],
+          Expanded(
+            child: TextFormFieldList(
+                contact: contact, flow: flow, controllerList: controllerList),
+          ),
+
+          ElevatedButton(
+            onPressed: () {
+              // Validate returns true if the form is valid, or false otherwise.
+              if (_formKey.currentState!.validate()) {
+                if (flow == FormFlow.ADD) {
+                  newContact = (CustomContactModel(
+                      firstName: controllerList[0].text.trim(),
+                      lastName: controllerList[1].text.trim(),
+                      phone: model.ItemModel(
+                          label: "work", value: controllerList[2].text),
+                      avatar: avatarLink));
+                } else {
+                  newContact = (CustomContactModel(
+                      firstName: controllerList[0].text.trim(),
+                      lastName: controllerList[1].text.trim(),
+                      phone: model.ItemModel(
+                          label: "work", value: controllerList[1].text),
+                      avatar: avatarLink));
+                }
+                Navigator.pop(context, newContact);
+              }
+            },
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -137,11 +106,40 @@ class CustomForm extends StatelessWidget {
     } else
       avatarLink = null;
   }
+}
 
-  String? nameValidator(String? value) {
-    if (value == null || value.isEmpty || value.trim().isEmpty)
-      return messages.emptyName;
-    if (value.trim().split(" ").length > 1) return messages.multipleWord;
-    return null;
+class TextFormFieldList extends StatelessWidget {
+  // const TextFormFieldList({ Key? key }) : super(key: key);
+  CustomContactModel? contact;
+  FormFlow flow;
+  List<TextEditingController> controllerList;
+  TextFormFieldList(
+      {this.contact, required this.flow, required this.controllerList});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AddUpdateProvider>(
+        builder: (context, addUpdateProvider, child) {
+      var formList = addUpdateProvider.createFormList(contact);
+      return ListView.builder(
+          itemCount: formList.length,
+          itemBuilder: (context, index) {
+            return TextFormField(
+              controller: flow == FormFlow.ADD
+                  ? controllerList[index]
+                  : (controllerList[index]
+                    ..text = (formList[index].controller!)),
+              decoration: InputDecoration(
+                label: Text(formList[index].label!),
+              ),
+              // The validator receives the text that the user has entered.
+              validator: index == 2
+                  ? ValidationBuilder().phone().minLength(10).build()
+                  : (value) {
+                      return formList[index].nameValidator(value);
+                    },
+            );
+          });
+    });
   }
 }

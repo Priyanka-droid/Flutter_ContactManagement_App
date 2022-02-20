@@ -80,7 +80,7 @@ class CustomForm extends StatelessWidget {
                       firstName: controllerList[0].text.trim(),
                       lastName: controllerList[1].text.trim(),
                       phone: model.ItemModel(
-                          label: "work", value: controllerList[1].text),
+                          label: "work", value: controllerList[2].text),
                       avatar: avatarLink));
                 }
                 Navigator.pop(context, newContact);
@@ -114,7 +114,11 @@ class TextFormFieldList extends StatelessWidget {
   FormFlow flow;
   List<TextEditingController> controllerList;
   TextFormFieldList(
-      {this.contact, required this.flow, required this.controllerList});
+      {Key? key,
+      this.contact,
+      required this.flow,
+      required this.controllerList})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

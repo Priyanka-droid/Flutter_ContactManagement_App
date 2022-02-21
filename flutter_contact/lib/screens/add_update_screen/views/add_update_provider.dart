@@ -24,25 +24,38 @@ class AddUpdateProvider extends ChangeNotifier {
       AddUpdateProvider(
         controller: contact?.phone.value,
         label: ContactAppStrings.instance.contactLabel,
-        validator: nameValidator,
+        validator: phoneValidator,
       )
     ];
     return formValueList;
   }
 
   String? nameValidator(String? value) {
-    print("name validator : ${value ?? "none"}");
-
     ContactAppStrings messages = ContactAppStrings.instance;
     if (value == null || value.isEmpty || value.trim().isEmpty) {
-      print("inner validator");
       return messages.emptyName;
     }
     if (value.trim().split(" ").length > 1) return messages.multipleWord;
     return null;
   }
 
-  phoneValidator(String? value) {
-    return ValidationBuilder().phone().minLength(10).build();
+  String? phoneValidator(String? value) {
+    ContactAppStrings messages = ContactAppStrings.instance;
+    if (value == null || value.isEmpty || value.trim().isEmpty) {
+      return messages.emptyPhone;
+    }
+    if (value.trim().split(" ").length > 1) return messages.multipleWord;
+    if (!isNumber(value)) return messages.invalidNumber;
+    return null;
+  }
+
+  bool isNumber(String? value) {
+    List<String> numList = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    if (value == null) return false;
+    if (value.length < 10 || value.length > 15) return false;
+    // for (int i = 0; i < value.length; i++) {
+    //   if (value[i] != '-' || !numList.contains(value[i])) return false;
+    // }
+    return true;
   }
 }

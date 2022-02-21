@@ -12,5 +12,7 @@ class ContactAppStrings {
   final String deleteDialog = 'Delete contact confirmation';
   final String confirmDelete = 'Do you want to delete this contact';
   final String emptyName = 'Name should not be empty';
+  final String emptyPhone = 'Phone should not be empty';
   final String multipleWord = 'Name should be single word';
+  final String invalidNumber = "Contact Number is invalid";
 }

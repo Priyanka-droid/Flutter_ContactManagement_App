@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contact/contact_app_strings.dart';
 import 'package:flutter_contact/models/custom_model.dart';
+import 'package:get/get.dart';
 
-class AddUpdateProvider extends ChangeNotifier {
+class AddUpdateController extends GetxController {
   String? controller;
   String? label;
-  AddUpdateProvider({this.controller, this.label});
+  AddUpdateController({this.controller, this.label});
 
-  List<AddUpdateProvider> createFormList(CustomContactModel? contact) {
-    List<AddUpdateProvider> formValueList = [
-      AddUpdateProvider(
+  List<AddUpdateController> createFormList(CustomContactModel? contact) {
+    List<AddUpdateController> formValueList = [
+      AddUpdateController(
         controller: contact?.firstName,
         label: ContactAppStrings.instance.firstNameLabel,
       ),
-      AddUpdateProvider(
+      AddUpdateController(
         controller: contact?.lastName,
         label: ContactAppStrings.instance.lastNameLabel,
       ),
-      AddUpdateProvider(
+      AddUpdateController(
         controller: contact?.phone.value,
         label: ContactAppStrings.instance.contactLabel,
       )

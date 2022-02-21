@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -25,11 +23,9 @@ class ContactManagement extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              CustomContactModel? newContact = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddUpdateScreen(flow: FormFlow.ADD)),
-              );
+              CustomContactModel? newContact =
+                  await Get.to(() => AddUpdateScreen(flow: FormFlow.ADD));
+
               newContact == null ? null : controller.addContact(newContact);
             },
             icon: Icon(Icons.add),
@@ -49,12 +45,12 @@ class ContactManagement extends StatelessWidget {
             bool isAvatar = contact.avatar == null ? false : true;
             return ListTile(
               onTap: () async {
-                CustomContactModel? newContact = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddUpdateScreen(
-                          flow: FormFlow.UPDATE, contact: contact)),
-                );
+                CustomContactModel? newContact = await Get.to(() =>
+                    AddUpdateScreen(flow: FormFlow.UPDATE, contact: contact));
+                //   MaterialPageRoute(
+                //       builder: (context) => AddUpdateScreen(
+                //           flow: FormFlow.UPDATE, contact: contact)),
+                // );
                 newContact == null
                     ? null
                     : controller.updateContact(index, newContact);

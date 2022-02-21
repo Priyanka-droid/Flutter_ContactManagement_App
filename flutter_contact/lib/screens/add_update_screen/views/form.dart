@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_contact/constants.dart';
 import 'package:flutter_contact/contact_app_strings.dart';
 import 'package:flutter_contact/screens/add_update_screen/views/add_update_provider.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -119,31 +120,27 @@ class TextFormFieldList extends StatelessWidget {
       required this.flow,
       required this.controllerList})
       : super(key: key);
-
+  final formController = Get.put(AddUpdateController());
   @override
   Widget build(BuildContext context) {
-    return Consumer<AddUpdateProvider>(
-        builder: (context, addUpdateProvider, child) {
-      var formList = addUpdateProvider.createFormList(contact);
-      return ListView.builder(
-          itemCount: formList.length,
-          itemBuilder: (context, index) {
-            return TextFormField(
-              controller: flow == FormFlow.ADD
-                  ? controllerList[index]
-                  : (controllerList[index]
-                    ..text = (formList[index].controller!)),
-              decoration: InputDecoration(
-                label: Text(formList[index].label!),
-              ),
-              // The validator receives the text that the user has entered.
-              validator: index == 2
-                  ? ValidationBuilder().phone().minLength(10).build()
-                  : (value) {
-                      return formList[index].nameValidator(value);
-                    },
-            );
-          });
-    });
+    var formList = formController.createFormList(contact);
+    return ListView.builder(
+        itemCount: formList.length,
+        itemBuilder: (context, index) {
+          return TextFormField(
+            controller: flow == FormFlow.ADD
+                ? controllerList[index]
+                : (controllerList[index]..text = (formList[index].controller!)),
+            decoration: InputDecoration(
+              label: Text(formList[index].label!),
+            ),
+            // The validator receives the text that the user has entered.
+            validator: index == 2
+                ? ValidationBuilder().phone().minLength(10).build()
+                : (value) {
+                    return formList[index].nameValidator(value);
+                  },
+          );
+        });
   }
 }

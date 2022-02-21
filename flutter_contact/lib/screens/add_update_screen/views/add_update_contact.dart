@@ -15,15 +15,13 @@ class AddUpdateScreen extends StatelessWidget {
   ContactAppStrings messages = ContactAppStrings.instance;
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AddUpdateProvider>(
-        create: (context) => AddUpdateProvider(),
-        child: Scaffold(
-          appBar: AppBar(
-            title: flow == FormFlow.ADD
-                ? Text(messages.addContact)
-                : Text(messages.updateContact),
-          ),
-          body: CustomForm(flow: flow, contact: contact),
-        ));
+    return Scaffold(
+      appBar: AppBar(
+        title: flow == FormFlow.ADD
+            ? Text(messages.addContact)
+            : Text(messages.updateContact),
+      ),
+      body: CustomForm(flow: flow, contact: contact),
+    );
   }
 }

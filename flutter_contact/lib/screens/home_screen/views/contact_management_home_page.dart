@@ -68,8 +68,7 @@ class ContactManagement extends StatelessWidget {
               },
               leading: isAvatar
                   ? CircleAvatar(backgroundImage: MemoryImage(contact.avatar))
-                  : CircleAvatar(
-                      child: Text(contact.firstName[0] + contact.lastName[0])),
+                  : CircleAvatar(child: Text(contact.firstName[0])),
               title: Text(
                 contact.firstName + " " + contact.lastName,
                 style: TextStyle(color: Colors.black),

@@ -137,11 +137,15 @@ class TextFormFieldList extends StatelessWidget {
                 label: Text(formList[index].label!),
               ),
               // The validator receives the text that the user has entered.
-              validator: index == 2
-                  ? ValidationBuilder().phone().minLength(10).build()
-                  : (value) {
-                      return formList[index].nameValidator(value);
-                    },
+              // validator: index == 2
+              //     ? ValidationBuilder().phone().minLength(10).build()
+              //     : (value) {
+              //         return formList[index].nameValidator(value);
+              //       },
+              validator: (value) {
+                // print("validator running");
+                return formList[index].validator!.call(value);
+              },
             );
           });
     });

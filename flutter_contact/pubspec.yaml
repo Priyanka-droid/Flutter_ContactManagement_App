@@ -37,6 +37,7 @@ dependencies:
   path_provider: ^2.0.8
   form_validator: ">=0.1.1 <2.0.0"
   image_picker: ^0.8.4+8
+  get: ^4.6.1
   
   
 

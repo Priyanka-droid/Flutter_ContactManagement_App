@@ -4,5 +4,5 @@ import 'package:flutter_contact/screens/home_screen/views/myapp.dart';
 
 void main() async {
   await HiveServices.instance.hiveService();
-  runApp(const MyApp());
+  runApp(MyApp());
 }

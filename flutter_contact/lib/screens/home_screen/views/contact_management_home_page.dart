@@ -7,6 +7,7 @@ import 'package:flutter_contact/constants.dart';
 import 'package:flutter_contact/contact_app_strings.dart';
 import 'package:flutter_contact/models/custom_model.dart';
 import 'package:flutter_contact/screens/add_update_screen/views/add_update_contact.dart';
+import 'package:get/get.dart';
 
 import 'package:provider/provider.dart';
 
@@ -16,43 +17,35 @@ class ContactManagement extends StatelessWidget {
   // const ContactManagement({Key? key}) : super(key: key);
 
   ContactAppStrings messages = ContactAppStrings.instance;
-
+  final controller = Get.put(ContactListController());
   @override
   Widget build(BuildContext context) {
-    return Consumer<ContactListProvider>(
-        builder: (context, contactListProvider, child) {
-      return Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
-              onPressed: () async {
-                CustomContactModel? newContact = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          AddUpdateScreen(flow: FormFlow.ADD)),
-                );
-                newContact == null
-                    ? null
-                    : contactListProvider.addContact(newContact);
-              },
-              icon: Icon(Icons.add),
-            )
-          ],
-        ),
-        body: displayContactList(),
-      );
-    });
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {
+              CustomContactModel? newContact = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddUpdateScreen(flow: FormFlow.ADD)),
+              );
+              newContact == null ? null : controller.addContact(newContact);
+            },
+            icon: Icon(Icons.add),
+          )
+        ],
+      ),
+      body: displayContactList(),
+    );
   }
 
   Widget displayContactList() {
-    return Consumer<ContactListProvider>(
-        builder: (context, contactListProvider, child) {
-      final contactList = contactListProvider.getContactList;
+    return Obx(() {
       return ListView.builder(
-          itemCount: contactList.length,
+          itemCount: controller.hiveList.value.length,
           itemBuilder: (context, index) {
-            final contact = contactList.getAt(index);
+            final contact = (controller.hiveList.value)[index];
             bool isAvatar = contact.avatar == null ? false : true;
             return ListTile(
               onTap: () async {
@@ -64,17 +57,16 @@ class ContactManagement extends StatelessWidget {
                 );
                 newContact == null
                     ? null
-                    : contactListProvider.updateContact(index, newContact);
+                    : controller.updateContact(index, newContact);
               },
               leading: isAvatar
-                  ? CircleAvatar(backgroundImage: MemoryImage(contact.avatar))
-                  : CircleAvatar(
-                      child: Text(contact.firstName[0] + contact.lastName[0])),
+                  ? CircleAvatar(backgroundImage: MemoryImage(contact.avatar!))
+                  : CircleAvatar(child: Text(contact.firstName[0])),
               title: Text(
                 contact.firstName + " " + contact.lastName,
                 style: TextStyle(color: Colors.black),
               ),
-              subtitle: Text(contact.phone.value),
+              subtitle: Text(contact.phone.value!),
               trailing: IconButton(
                   onPressed: () {
                     showDialog(
@@ -92,7 +84,7 @@ class ContactManagement extends StatelessWidget {
                           TextButton(
                             child: Text("Yes"),
                             onPressed: () {
-                              contactListProvider.deleteContact(index);
+                              controller.deleteContact(index);
                               Navigator.of(ctx).pop();
                             },
                           ),

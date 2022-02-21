@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 // add screen which displays add form on giving index -1
 
 class AddUpdateScreen extends StatelessWidget {
-  FormFlow flow;
+  final FormFlow flow;
   final CustomContactModel? contact;
   AddUpdateScreen({required this.flow, this.contact});
   ContactAppStrings messages = ContactAppStrings.instance;
